@@ -9,7 +9,7 @@ except ImportError:
 
 LAB1_INDEX = 1
 LAB2_INDEX = 2
-LAB_INDEX = 1  # 1 = Exercise 1, 2 = Exercise 2
+DEFAULT_LAB_INDEX = LAB2_INDEX  # 1 = Exercise 1, 2 = Exercise 2
 
 DEFAULT_OUTPUT_PATH = "pic_input.txt"
 LAB_INPUT_PATHS = {
@@ -31,6 +31,18 @@ def get_default_input_path(lab_index):
     if lab_index not in LAB_INPUT_PATHS:
         die("LAB_INDEX must be 1 or 2.")
     return LAB_INPUT_PATHS[lab_index]
+
+
+def get_lab_index_from_env():
+    raw = os.getenv("LAB_INDEX", str(DEFAULT_LAB_INDEX)).strip()
+    try:
+        lab_index = int(raw)
+    except ValueError:
+        die(f"Invalid LAB_INDEX='{raw}'. Must be 1 or 2.")
+
+    if lab_index not in (LAB1_INDEX, LAB2_INDEX):
+        die(f"Invalid LAB_INDEX='{raw}'. Must be 1 or 2.")
+    return lab_index
 
 
 def write_hex_lines(output_path, values, bit_width):
@@ -109,6 +121,7 @@ def img2hex(input_path, output_path=None, lab_index=LAB1_INDEX):
 
 
 if __name__ == "__main__":
+    LAB_INDEX = get_lab_index_from_env()
     default_input_path = get_default_input_path(LAB_INDEX)
     img2hex(
         input_path=default_input_path,

@@ -12,15 +12,15 @@ except ImportError:
 
 LAB1_INDEX = 1
 LAB2_INDEX = 2
-LAB_INDEX = 1  # 1 = Exercise 1, 2 = Exercise 2
+DEFAULT_LAB_INDEX = LAB2_INDEX  # 1 = Exercise 1, 2 = Exercise 2
 
 # Must match BRIGHTNESS_OFFSET in Verilog for Lab 2 fair evaluation.
 LAB2_BRIGHTNESS_OFFSET = 0
 
 DEFAULT_OUTPUT_HEX_PATH = "pic_output.txt"
 LAB_OUTPUT_IMAGE_PATHS = {
-    LAB1_INDEX: "restored_lab1.png",
-    LAB2_INDEX: "restored_lab2.png",
+    LAB1_INDEX: "restored_exercise1.png",
+    LAB2_INDEX: "restored_exercise2.png",
 }
 LAB_REFERENCE_IMAGE_PATHS = {
     LAB1_INDEX: "baitap1_anhgoc.jpg",
@@ -131,5 +131,18 @@ def run_for_selected_lab(lab_index):
 
     hex2img(input_hex_path, output_image_path, reference_gray)
 
+
+def get_lab_index_from_env():
+    raw = os.getenv("LAB_INDEX", str(DEFAULT_LAB_INDEX)).strip()
+    try:
+        lab_index = int(raw)
+    except ValueError:
+        die(f"Invalid LAB_INDEX='{raw}'. Must be 1 or 2.")
+
+    if lab_index not in (LAB1_INDEX, LAB2_INDEX):
+        die(f"Invalid LAB_INDEX='{raw}'. Must be 1 or 2.")
+    return lab_index
+
 if __name__ == "__main__":
+    LAB_INDEX = get_lab_index_from_env()
     run_for_selected_lab(LAB_INDEX)
